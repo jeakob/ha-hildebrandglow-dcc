@@ -151,17 +151,19 @@ def device_name(resource, virtual_entity) -> str:
 
 async def should_update() -> bool:
     """Check if time is between 1-5 or 31-35 minutes past the hour."""
-    return True
+    now = datetime.now()
+    minute = now.minute
+    return 1 <= minute <= 5 or 31 <= minute <= 35
 
 
-async def daily_data(hass: HomeAssistant, resource, t_from: datetime = None, precision: str = "PT30M") -> (float, str):
+async def daily_data(hass: HomeAssistant, resource, t_from: datetime = None, precision: str = "PT30M") -> tuple[float, str]:
     """Get daily usage from the API."""
     # Always pull down the last 6 hours of readings
     now = datetime.now()
     # Round to the day to set time to 00:00:00
     t_from = await hass.async_add_executor_job(resource.round, datetime.now() - timedelta(hours=12), "PT1M")
     # Round to the minute subtract 1 hour to account for non complete hours
-    t_to = await hass.async_add_executor_job(resource.round, now, "PT1M")#await hass.async_add_executor_job(resource.round, (now - timedelta(hours=1)).replace(minute= 59, second=59), "PT1M")
+    t_to = await hass.async_add_executor_job(resource.round, (now - timedelta(minutes=1)).replace(minute=59, second=59), "PT1M")
     # Tell Hildebrand to pull latest DCC data
     try:
         await hass.async_add_executor_job(resource.catchup)
@@ -193,7 +195,7 @@ async def daily_data(hass: HomeAssistant, resource, t_from: datetime = None, pre
     except requests.exceptions.ConnectionError as ex:
         _LOGGER.error("Cannot connect: %s", ex)
     # Can't use the RuntimeError exception from the library as it's not a subclass of Exception
-    except Exception as ex:  # pylint: disable=broad-except
+    except Exception as ex:  # pylint:  disable=broad-except
         if "Request failed" in str(ex):
             _LOGGER.warning(
                 "Non-200 Status Code. The Glow API may be experiencing issues"

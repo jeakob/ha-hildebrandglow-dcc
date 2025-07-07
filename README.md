@@ -1,4 +1,4 @@
-# Hildebrand Glow (DCC) Integration
+# Hildebrand Glow (DCC) Integration - 2025
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/jeakob/ha-hildebrandglow-dcc?style=for-the-badge)](https://www.codefactor.io/repository/github/jeakob/ha-hildebrandglow-dcc)

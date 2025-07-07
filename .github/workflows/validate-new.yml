@@ -2,10 +2,12 @@ name: Validate
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
   schedule:
-    - cron: "0 0 * * *"
-
+    - cron: "27 0 * * 6"
+  workflow_dispatch:
 jobs:
   validate:
     runs-on: "ubuntu-latest"
